@@ -1,0 +1,245 @@
+#+TITLE: Vidjil -- Server Manual
+
+This is the preliminary help of the upcomping Vidjil server.
+This help is intended for server administrators. 
+Users of the should consult the browser help.
+
+* Installing and running the vidjil server
+
+These installation instruction are for Ubuntu server 14.04
+
+** Requirements
+    apt-get install git
+    apt-get install g++
+    apt-get install make
+    apt-get install unzip
+
+** Vidjil server installation and initialization
+   Enter in the =server/= directory.
+
+   If you just want to do some tests without installing a real web server,
+   then launch =make install_web2py_standalone=. In the other case, launch
+   =make install_web2py=.
+
+   The process for installing Vidjil server together with a real web server
+   will be detailed in the future.
+
+** Detailed manual server installation and browser linking
+	
+	Requirements:
+		ssh, zip unzip, tar, openssh-server, build-essential, python, python-dev,
+		mysql, apache2, libapache2-mod-wsgi, python2.5-psycopg2, postfix, wget,
+		python-matplotlib, python-reportlab, mercurial, git
+
+
+	For simplicity this guide will assume you are installing to /home/www-data
+
+	Clone https://github.com/vidjil/vidjil.git
+
+	Download and unzip web2py. Copy the contents of web2py to the server/web2py
+	folder of you Vidjil installation
+	(in this case /home/www-data/vidjil/server/web2py) and give ownership to www-data:
+
+	chown -R www-data:www-data /home/www-data/vidjil
+
+	You can run the following commands to make sure all the apache modules you need
+	are activated:
+
+		a2enmod ssl
+		a2enmod proxy
+		a2enmod proxy_http
+		a2enmod headers
+		a2enmod expires
+		a2enmod wsgi
+		a2enmod rewrite  # for 14.04
+
+
+	In order to setup the SSL encryption a key to give to apache. The safest option
+	is to get a certicate from a trusted Certificate Authority, but for testing
+	purposes you can generate your own:
+
+		mkdir /etc/apache2/ssl
+		openssl genrsa 1024 > /etc/apache2/ssl/self_signed.key
+		chmod 400 /etc/apache2/ssl/self_signed.key
+		openssl req -new -x509 -nodes -sha1 -days 365 -key /etc/apache2/ssl/self_signed.key > /etc/apache2/ssl/self_signed.cert
+		openssl x509 -noout -fingerprint -text < /etc/apache2/ssl/self_signed.cert > /etc/apache2/ssl/self_signed.info
+
+
+	Given that Vidjil is a two-part application, one that serves routes from a server
+	and one that is served statically, we need to configure the apache to do so.
+	Therefore we tell the apache to:
+		- Start web2py as a wsgi daemon (allows apache to serve the application).
+		- Reserve two virtual hosts (one to be served with ssl encryption, and one not).
+		- We configure the first host to serve static content and prevent overriding
+			by the sever (otherwise all routes are redirected through web2py) and to follow symlinks
+			this allows us to symlink to our browser app in the /var/www directory and keep both parts
+			of Vidjil together.
+		- The second is set to use SSL encryption, and only serve very specific folders statically (such
+			as javascript files and images because we don't want to create a controller to serve that kind of data)
+
+	you can replace your apache default config with the following
+	(/etc/apache2/sites-available/default.conf - remember to make a backup just in case): 
+
+		WSGIDaemonProcess web2py user=www-data group=www-data processes=1 threads=1
+
+		<VirtualHost *:80>
+
+		  DocumentRoot /var/www
+		  <Directory />
+		    Options FollowSymLinks
+		    AllowOverride None
+		  </Directory>
+
+		  <Directory /var/www/>
+		    Options Indexes FollowSymLinks MultiViews
+		    AllowOverride all
+		    Order allow,deny
+		    allow from all
+		  </Directory>
+
+		  ScriptAlias /cgi/ /usr/lib/cgi-bin/
+
+		  <Directory /usr/lib/cgi-bin/>
+		    Options Indexes FollowSymLinks
+		    Options +ExecCGI
+		    #AllowOverride None
+		    Require all granted
+		    AddHandler cgi-script cgi pl
+		  </Directory>
+
+		  <Directory /home/www-data/vidjil/browser>
+		    AllowOverride None
+		  </Directory>
+
+		  CustomLog /var/log/apache2/access.log common
+		  ErrorLog /var/log/apache2/error.log
+		</VirtualHost>
+
+
+		<VirtualHost *:443>
+		  SSLEngine on
+		  SSLCertificateFile /etc/apache2/ssl/self_signed.cert
+		  SSLCertificateKeyFile /etc/apache2/ssl/self_signed.key
+
+		  WSGIProcessGroup web2py
+		  WSGIScriptAlias / /home/www-data/vidjil/server/web2py/wsgihandler.py
+		  WSGIPassAuthorization On
+
+		  <Directory /home/www-data/vidjil/server/web2py>
+		    AllowOverride None
+		    Require all denied
+		    <Files wsgihandler.py>
+		      Require all granted
+		    </Files>
+		  </Directory>
+
+		  AliasMatch ^/([^/]+)/static/(?:_[\d]+.[\d]+.[\d]+/)?(.*) \
+		        /home/www-data/vidjil/server/web2py/applications/$1/static/$2
+
+		  <Directory /home/www-data/vidjil/server/web2py/applications/*/static/>
+		    Options -Indexes
+		    ExpiresActive On
+		    ExpiresDefault "access plus 1 hour"
+		    Require all granted
+		  </Directory>
+
+		  CustomLog /var/log/apache2/ssl-access.log common
+		  ErrorLog /var/log/apache2/error.log
+		</VirtualHost>
+
+	Now we want to activate some more apache mods:
+		a2ensite default                   # FOR 14.04
+		a2enmod cgi
+
+	Restart the server in order to make sure the config is taken into account.
+
+	And create some symlinks to avoid splitting our app:
+
+		ln -s /home/www-data/vidjil/browser /var/www/browser
+		ln -s /home/www-data/vidjil/browser/cgi/align.cgi /usr/lib/cgi-bin
+		ln -s /home/www-data/vidjil/germline /var/www/germline
+		ln -s /home/www-data/vidjil/data /var/www/data
+
+	Now we need to configure the database connection parameters:
+		- create a file called conf.js in /home/www-data/vidjil/browser/js containing:
+			var config = {
+			    /*cgi*/
+			    \"cgi_address\" : \"default\",
+			    
+			    /*database */
+			    \"use_database\" : true,
+			    \"db_address\" : \"default\",
+			    
+			    \"debug_mode\" : false  
+			}
+		This tells the browser to access the server on the current domain.
+
+		- copy vidjil/server/web2py/applications/vidjil/modules/defs.py.sample
+			to vidjil/server/web2py/applications/vidjil/modules/defs.py
+		  and change the value of DB_ADDRESS to reference your database.
+
+	You can now access your app.
+	All that is left to do is click on the init database link above the login page.
+	This creates a default admin user: plop@plop.com and password: 1234 (make sure to
+	remove this user in your production environment) and creates the configurations you can have
+	for files and results.
+
+	
+* Testing the server
+  If you develop on the server, or just want to check if everything is ok, you
+  should launch the server tests.
+
+  First, you should have a working fuse server by launching =make
+  launch_fuse_server= (just launch it once, then it is running in the
+  background and can be killed with =make kill_fuse_server=).
+
+  Then you can launch the tests with =make unit=.
+
+
+* Troubleshootings
+
+** Workers seem to be stuck
+   For some reasons, that are not clear yet, it may happen that workers are not
+   assigned any additional jobs even if they don't have any ongoin jobs.
+
+   In such a (rare) case, it may be useful to restart web2py schedulers
+   #+BEGIN_SRC sh
+   initctl restart web2py-scheduler
+   #+END_SRC
+
+** Restarting web2py
+   Just touch the file =/etc/uwsgi/web2py.ini=.
+* Hardware
+** Minimal
+   The minimal requirement for running Vidjil is quite low. For a single run,
+   a single core processor with 2GB of RAM will suffice (Vidjil Typically uses
+   approx. 1.2GB of RAM to run on a 1GB fastq and will take approx. 5 minutes+).
+   Therefore in order to maintain a stable service of the server with a single
+   worker for running Vidjil, any standard multi-core processor will do.
+
+** Recommended
+   When choosing hardware for your server it is important to know the scale
+   of usage you require.
+   If you have many users that use the app on a daily basis, you will need to
+   have multiple cores to ensure the worker queues don't build up.
+   One worker will occupy one core completely when running Vidjil (Vidjil is
+   currently single-threaded).
+
+   For reference, here is the current Vidjil setup we use on our public
+   testing server:
+      - Processor: Quad core Intel 2.4MHz
+      - RAM: 16GB
+
+   This configuration currently serves 15 regular users (~40 total).
+   Given that the CPU is quad-core, we have 3 workers for executing Vidjil.
+   This way the webserver can always have a dedicated cpu core and
+   running the workers at full capacity has no adverse effects on the
+   web server's response times.
+
+* Storage
+  The main limitation of Vidjil is the amount of data involved. Files can
+  sometimes weigh several GB, so a full installation's total storage should
+  be be serveral hundred GB, or even several TB.
+
+  We recommend a RAID setup of at least 2x2TB to allow for user files and at
+  least one backup.
