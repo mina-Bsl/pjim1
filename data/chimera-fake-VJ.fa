@@ -1,0 +1,21 @@
+# Fake chimera sequences, (somewhat unprobable) V-J recombinations
+
+>TRBV1*01--TRGJ1*01
+cagcaagaagactcagctgcgtatctctgcaccagcagccaaga
+gaattattataagaaactctttggcagtggaacaacactggttgtcacag
+
+>TRDV1*01--IGHJ1*01
+ttacagctagaagattcagcaaagtacttttgtgctcttggggaact
+gctgaatacttccagcactggggccagggcaccctggtcaccgtctcctcag
+
+>TRDV1*01--IGKV1-12*01 (J is a revcomp'd V)
+ttacagctagaagattcagcaaagtacttttgtgctcttggggaact
+ggagggaaactgttagcctgttgacaatagtaa
+
+>IGLJ1*01--TRGJ1*01 (V is a revcomp'd J)
+tgaccttggtcccagttccgaagacataa
+gaattattataagaaactctttggcagtggaacaacactggttgtcacag
+
+>IGKV1-12*01--IGLJ1*01 (both revcomp)
+ctaggacggtgaccttggtcccagttccgaagacataa
+ggagggaaactgttagcctgttgacaatagtaagttgcaaaatcttc

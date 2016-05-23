@@ -1,0 +1,721 @@
+*{
+  margin:0;
+  padding:0;
+}
+
+#visu2 {
+    height: 100%;
+}
+
+
+.footer
+{
+position:fixed;
+bottom: 0;
+width: 100%;
+height: 11vh
+}
+
+html,body
+{
+height:100vh;
+background-color: rgba(0, 0, 0, 0.2);
+}
+
+
+.container-fluid {
+    padding-right: 0px;
+    padding-left: 0px;
+}
+/**
+ concerne le menu puis color by 
+ et select option
+ */
+
+
+
+.item{
+width:100%;
+}
+
+#info-row, #list-row, #visu2, #visu{
+border:solid;
+
+}
+
+#infoicone{
+background: url("../image/info48.png");
+background-repeat: no-repeat;
+background-color:white;
+}
+
+#graphicone{
+background-image: url("../image/graph48.png");
+background-repeat: no-repeat;
+background-color:white;
+}
+
+
+#dnaicone
+{
+background-image: url("../image/dna48.jpg");
+background-repeat: no-repeat;
+background-color:white;
+}
+
+
+#gridicone
+{
+background-image: url("../image/grid48.png");
+background-repeat: no-repeat;
+background-color:white;
+}
+ 
+label
+{
+	background-color: transparent;
+	color: #9D9D9D;
+	font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+	font-weight:normal;
+	
+}
+
+
+label:hover,
+label:focus {
+	outline: 0;
+}
+
+
+#spe>label{
+  position: relative;
+  display: block;
+  padding: 10px 15px;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.filter-option{
+  margin-left:5px;
+  position: relative;
+  display: inline;
+  padding: 2px 5px;
+  color:black;
+}
+/**
+ fin color by 
+ */
+ 
+ #globale
+ {
+ position:relative;
+ border:solid;
+ }
+ 
+ /**
+ partie centrale principale puis
+ de gauche à droite
+ */
+	
+ #principale
+{
+position:relative;
+border:solid;
+}
+
+ /* deux sous parties principales la fenêtre suivi de la boite à filtre */
+ #windows
+{
+position:relative;
+border:solid;
+}
+
+.carousel-indicators {
+bottom: 40px;
+}
+
+#infoicone,#graphicone,#gridicone,#dnaicone{
+height:48px;
+width:48px;
+}
+
+
+#filter
+{
+position:relative;
+border:solid;
+}
+
+.tagColor0 {
+  background: #DC322F;
+}
+.tagColor1 {
+  background: #cb4b16;
+}
+.tagColor2 {
+  background: #b58900;
+}
+.tagColor3 {
+  background: #268bd2;
+}
+.tagColor4 {
+  background: #6c71c4;
+}
+.tagColor5 {
+  background: #2aa198;
+}
+.tagColor6 {
+  background: #d33682;
+}
+.tagColor7 {
+  background: #859900;
+}
+.tagColor8 {
+  background: #657b83;
+}
+
+/* la suivante à droite de principale */
+
+
+
+
+.image{
+
+/*min-height:54px;
+min-width:108px;*/
+/*max-height:590px !important;*/
+width: 100%;
+}
+
+
+/*le pied */
+
+.footer{
+position:fixed;
+bottom: 0;
+/*width: 100%;
+height: 50px;*/
+background-color:#222;
+}
+
+
+#dna
+{
+	background-color: #222;
+	border-color: #080808;
+	color: #9D9D9D;
+	font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+	font-weight:normal;
+}
+
+#footerbut
+{
+text-align: top;
+/*width: 100%;*/
+height:7px;
+background: gray;
+}
+
+/* grand */
+
+/*
+@media (min-width: 1920px) {
+
+#gauche, #droite{
+display:none;
+visibility:none;
+}
+#scrolle
+{
+display: none;
+visibility:hidden;
+}
+
+.carousel-indicators{
+display:none;
+visibility:hidden;
+}
+.image .imagehidden{
+float:left;
+}
+
+}
+*/
+/* Mobile/tablette 800 * 1280 */
+
+{
+
+}
+
+@media (min-width:768px){
+
+#info-row, #list-row, #visu{
+	float:right;
+	display: block;
+	margin-top:2%;
+	margin-bottom:2%;
+}
+
+#droite
+{
+display:none;
+visibility:hidden;
+}
+
+#gauche
+{
+display:none;
+visibility:hidden;
+}
+
+.carousel-indicators {
+display:none;
+visibility:hidden;
+}
+
+
+#filter
+{
+visibility:hidden;
+display:none;
+}
+
+.footer
+{
+position:fixed;
+bottom: 0;
+width: 100%;
+height: 5vh;
+}
+
+}
+
+
+@media (min-width:768px) and (orientation: portrait){
+
+#filterb
+{
+width:4%;
+height:13vh;
+border:solid;
+bottom: 0;
+position:relative;
+
+}
+
+#info-row, #list-row, #visu{
+	height:auto;
+	width:20vw;
+	margin-left:4vw;
+}
+
+
+.item {
+    height: 68vh !important;
+}
+.image, .imagehidden {
+    height: 68vh !important;
+}
+
+
+#globale {
+    height: 69vh !important;
+}
+
+#principale {
+    height: 69vh !important;
+}
+
+#windows {
+    height: 68vh !important;
+}
+
+
+
+#menunav
+{
+height:6vh !important;
+}
+
+
+.item{
+width:100%;
+}
+
+
+ #windows
+{
+position:relative;
+border:solid;
+
+}
+
+
+.tagColorBox {
+
+    float:left;
+    display: inline-block;
+    margin-left: 3%;
+    margin-right:3%;
+    margin-top: 1%;
+    height: 10%;
+    width: 60%;
+    cursor: pointer;   
+}
+
+
+
+#logo
+{
+width: 50%;
+font-size: 14px;
+}
+
+
+
+
+}
+
+@media (min-width:768px) and (orientation: landscape){
+
+#info-row, #list-row, #visu{
+	height:20vh;
+}
+
+#list-row *{height:10vh;}
+
+
+#filter
+{
+visibility:hidden;
+display:none;
+}
+
+#filterb
+{
+width:90%;
+height:4vh;
+border:solid;
+position: absolute;
+bottom: 0;
+
+}
+
+#scrolle{
+border:solid;
+height: 69vh;
+}
+
+
+.item {
+    height: 68vh !important;
+}
+.image, .imagehidden {
+    height: 68vh !important;
+}
+
+
+#globale {
+    height: 80vh !important;
+    margin-top:1vh;
+}
+
+#principale {
+    height: 69vh !important;
+}
+
+#windows {
+    height: 68vh !important;
+    border:solid;
+}
+
+
+#menunav
+{
+height:6vh !important;
+}
+
+
+.item{
+width:100%;
+}
+
+
+
+
+.tagColorBox {
+    float:left;
+    display: inline-block;
+    margin-left: 1%;
+    margin-right:1.5%;
+    margin-top: 1%;
+    margin-bottom:1%;
+    height: 1.5vh;
+    width: 1.5vh;
+    cursor: pointer;   
+}
+
+
+
+#logo
+{
+width: 50%;
+font-size: 14px;
+}
+
+
+
+}
+
+/* SCROLL VISIBILITY */
+
+@media (max-width: 767px){
+	#filterb
+	{
+	visibility: hidden;
+	display:none;
+	}
+	#scrolle
+	{
+	visibility: hidden;
+	display:none;
+	}
+	#image2, #image3, #image4
+	{
+	visibility:hidden;
+	}
+}
+/****************/
+
+/********************/
+@media (max-width: 767px) and (orientation: portrait){
+
+
+
+#menunav
+{
+height:9vh;
+}
+
+#myCarousel
+{
+height:71vh;
+}
+
+.carousel-inner {
+height:71vh;
+}
+
+.container-fluid {
+    padding-right: 0px;
+    padding-left: 0px;
+}
+.carousel-control {
+width:5%;
+}
+
+
+
+.carousel-indicators {
+bottom: 0px;
+}
+
+ul, ol {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+#globale
+{
+ height:80vh;
+}
+
+ #principale
+{
+position:relative;
+border:solid;
+height:79vh;
+
+}
+
+
+ #windows
+{
+position:relative;
+border:solid;
+height:72vh;
+}
+
+
+
+
+#infoicone,#graphicone,#gridicone,#dnaicone{
+/*max-height:12px;
+max-width:12px;*/
+background-color:white;
+height:4vh;
+width:4vh;
+}
+
+
+.item{
+width:100%;
+height:71vh;
+}
+
+
+.image, .imagehidden{
+height:71vh /*!important;*/
+}
+
+#filter
+{
+    height:6vh;
+}
+
+#filterb
+{
+width:4vw;
+height:90%;
+border:solid;
+position: absolute;
+bottom: 0;
+
+}
+
+.tagColorBox {
+
+    float:left;
+    display:table-cell;
+    margin-left: 1%;
+    margin-right:1%;
+    margin-top: 0.5%;
+    margin-bottom:0.5%;
+    min-height: 10px;
+    max-height: 20px;
+    min-width: 10px;
+    max-width: 20px;
+    /*height: 48%;
+    width: 9%;*/
+    cursor: pointer;   
+}
+
+
+.footer
+{
+position:fixed;
+bottom: 0;
+width: 100%;
+height: 7vh;
+}
+
+}
+
+
+@media (max-width: 768px) and (orientation: landscape){
+
+
+.page-header {
+	padding-bottom: 1vh; 
+    	margin: 40px 0px 0px;
+}
+.carousel-indicators {
+bottom: 0px;
+}
+
+ul, ol {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+
+.container-fluid {
+    padding-right: 0px;
+    padding-left: 0px;
+}
+
+.carousel-control {
+width:5%;
+}
+
+#globale
+{
+height:78vh;
+}
+
+ #principale
+{
+position:relative;
+border:solid;
+height:77vh;
+}
+
+
+ #windows
+{
+position:relative;
+border:solid;
+height:69vh;
+}
+
+
+#infoicone,#graphicone,#gridicone,#dnaicone{
+height:20px;
+width:20px;
+}
+
+
+.item{
+width:100%;
+height:69vh;
+}
+
+
+.image, .imagehidden{
+width:100%;
+height:67vh !important;
+}
+
+#filter
+{
+    height:6vh;
+}
+
+.tagColorBox {
+    float:left;
+    display: inline-block;
+    margin-left: 1%;
+    margin-right:1%;
+    margin-top: 0.5%;
+    margin-bottom:0.5%;
+    
+    min-height: 10px;
+    max-height: 20px;
+    min-width: 10px;
+    max-width: 20px;
+   /* height: 48%;
+    width: 9%;*/
+    cursor: pointer;   
+}
+
+
+.footer
+{
+position:fixed;
+bottom: -3px;
+width: 100%;
+height: 10vh;
+}
+
+
+}
+@media (max-width: 350px){
+#logo {
+    width: 40%;
+    font-size: 10px;
+}
+}
+
+
+
+

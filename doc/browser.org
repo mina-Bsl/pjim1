@@ -1,0 +1,364 @@
+#+TITLE: Vidjil -- Web Application Manual
+#+AUTHOR: The Vidjil team (Mathieu, Mikaël, Florian, Marc, Ryan and Tatiana)
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="../css/org-mode.css" />
+
+Vidjil is an open-source platform for the analysis of high-throughput sequencing data from lymphocytes.
+[[http://en.wikipedia.org/wiki/V(D)J_recombination][V(D)J recombinations]] in lymphocytes are essential for immunological diversity.
+They are also useful markers of pathologies, and in leukemia, are used to quantify the minimal residual disease during patient follow-up.
+High-throughput sequencing (NGS/HTS) now enables the deep sequencing of a lymphoid population with dedicated [[http://omictools.com/rep-seq-c424-p1.html][Rep-Seq]] methods and software.
+
+This is the help of the [[http://app.vidjil.org/browser/][Vidjil web application]].
+Further help can always be asked to [[mailto:contact@vidjil.org][contact@vidjil.org]]. We can also arrange phone or Skype meeting.
+
+The Vidjil team (Mathieu, Mikaël, Florian, Marc, Ryan and Tatiana)
+
+* Requirements
+
+** Web application
+
+The Vidjil web application runs in any modern browser. It has been successfully tested on the following platforms
+ - Firefox version >= 32
+ - Chrome version >= 38
+ - IE version >= 10.0 (Vidjil will not run on IE 9.0 or below)
+ - Opera version >= XX
+ - Safari version >= 6.0
+
+** The .vidjil files
+
+The vidjil web application displays =.vidjil= files that summarize the V(D)J
+recombinations and the sequences found in a run. 
+
+The easiest way to get these files is to [[http://rbx.vidjil.org/browser][request an account]] on the public Vidjil test server.
+You will then be able to upload,
+manage, process your runs (=.fasta=, =.fastq=, =.gz= or =.clntab= files) directly on the web application
+(see below 'patient database'), and the server behind the patient
+database computes these =.vidjil= files.
+Otherwise, such =.vidjil= files can be obtained:
+ - from the command-line version of Vidjil (starting from
+   =.fasta=, =.fastq= or =.gz= files, see [[http://git.vidjil.org/blob/master/doc/algo.org][algo.org]]).
+   To gather several =.vidjil= files, you have to use the [[http://git.vidjil.org/blob/master/tools/fuse.py][fuse.py]] script
+ - or by any other V(D)J analysis pipelines able to output files
+   respecting the =.vidjil= [[./format-analysis.org][file format]] (contact us if you are interested)
+
+
+
+* First aid
+
+- Open data by:
+    - either with “patients”/“open patient”  if you are connected to a patient database, such as on http://app.vidjil.org/
+      (in this case, there are always some "Demo" datasets for demonstration purposes),
+    - or with “file”/“import/export”, manually selecting a =.vidjil= file
+
+- You can change the number of displayed clones by moving the slider “number of clones” (menu “filter”).
+  The maximal number of clones that can be displayed depends on the processing step before.
+  See below ("Can I see all the clones ?").
+
+- Clones can be selected by clicking on them either in the list, on the time graph,
+  or the grid (simple selection or rectangle selection).
+
+- There are often very similar clones, coming from either somatic hypermutations or from sequencing errors.
+  You can select such clones (for example those sharing a same V and a same J), then:
+   - inspect the sequences in the lower panel (possibly using the “align” function),
+   - remove some of these sequences from the selection (clicking on their name in the lower panel)
+   - merge them (button “merge”) in a unique clone.
+     Once several clones are merged, you can still visualize them by clicking on “+” in the list of clones.
+
+- Your analysis (clone tagging, renaming, merging) can be saved:
+    - either with “patients”/“save analysis” if you are connected to a patient database
+    - or with “file”/“export .analysis”
+
+* The elements of the Vidjil web application
+
+** The info panel (upper left panel)
+   - analysis :: name of the configuration file used for displaying the data
+   - locus :: germline used for analyzing the data. In case of multi-locus
+               data, you can select what locus should be displayed (see [[http://git.vidjil.org/blob/master/doc/locus.org][locus.org]])
+   - sample :: name of the current point (you can change the selected point by clicking on
+              another point in the graph). The name can be edited (“edit”).
+   - date :: when the run was performed (edit either with “...”, or with the database, on the patient tab)
+   - segmented :: number of reads where Vidjil found a CDR3, for that sample
+                  See [[Number of segmented reads]] below.
+   - total :: total number of reads for that point
+
+** The list of clones (left panel)
+
+- You can assign other tags with colors to clones using the “★” button.
+  The “filter” menu allows to further filter clones by tags.
+- Under the “★” button it is possible to normalize clone concentrations
+  according to this clone. You must specify the expected concentration in the
+  “expected size” field (e.g. 0.01 for 1%). See [[Control with standard/spike]] below.
+
+- The “i” button displays additional information on each clone.
+
+- The list can be sorted on V genes, J genes or clone abundance.
+  The “+” and “-” allow respectively to un-merge or re-merge all clones that have
+  already been merged.
+
+- Clones can be searched (“search” box) by either their name, their custom name, 
+  or their DNA sequence.
+- The concentration of some clones may not be displayed. Instead you can have
+  either a =+= symbol or a =-= symbol. In the former case that means the clone has
+  been detected (positive) but in few reads (typically less than five). In the
+  latter case it means that the clone has not been detected (negative) in the
+  sample but has been detected in another time point that is not currently
+  displayed.
+
+** The time graph
+
+The time graph is hidden with there is only one timepoint.
+
+- The current point is highlighted with a vertical gray bar, you can change that by clicking on another point.
+
+- The gray areas at the bottom of the graph show, for each point, the resolution (1 read / 5 reads).
+
+- You can reorder the points by dragging them, and hide some points by dragging them on the “+” mark at the right of the points.
+  If you want to recover some hidden points, you need to drag them from the “+” mark to the graph.
+
+- If your dataset contains sampling dates (for example in a MRD setup), you can switch between point keys and dates in “settings > point key”
+
+
+** The plot view
+
+- The "plot" menu allow to change the (grid plot, bar plot) as well as the X and Y axes of these plot
+  Some presets are available.
+
+- In the bar plot mode, the Y axis corresponds to the order of clones inside each bar.
+
+- The “focus“ button (bottom right) allows to further analyze a selection of clones.
+  To exit the focus mode, click on the “X” near the search box.
+  
+To further analyze a set of clones sharing a same V and J, it is often useful
+to focus on the clones, then to display them ones according to either their “clone length”
+or their “N length” (that is N1-D-N2 in the case of VDJ recombinations)
+
+** The aligner (bottom panel)
+
+The aligner display nucleotide sequences from selected clones.
+   - See "What is the sequence displayed for each clone ?" below
+   - Sequences can be aligned together (“align” button), identifying substitutions, insertions and deletions.
+   - You can remove sequences from the aligner (and the selection) by clicking on their name
+   - You can further analyze the sequences with IMGT/V-QUEST and IgBlast on the selected sequences. This opens another window/tab.
+   - You can unselect all sequences by clicking on the background of the grid.
+
+** The patient database and the server
+
+If a server with a patient/experiment database is configured with your
+installation of Vidjil (as on http://app.vidjil.org/), the
+'patient' menu gives you access to the server.
+
+With authentication, you can add patients, then add either
+=.fasta=, =.fastq=, =.gz= or =.clntab= files, then process your
+runs and save the results of your analysis.
+
+*** Patients
+      
+Once you are authentified, this page show the patient list. Here you
+can see your patients and patients whose permission has been given to you.
+
+New patients can be added ('add patient'), edited ('e') or deleted ('X').
+By default, you are the only one who can see and update this new patient.
+If you have an admin access, you can grant access to other users ('p').
+
+*** Samples
+
+Clicking on a patient give acccess the "samples" page. Each sample is
+a =.fasta=, =.fastq=, =.gz= or =.clntab= file that will be processed by one or several
+pipelines with one or several /configurations/ that set software options.
+The base configurations are « TRG », « IGH », « multi » (=-g germline=) and « multi+inc » (=-g germline -i=).
+See also https://github.com/vidjil/vidjil/blob/master/doc/locus.org.
+
+You can see which samples have been processed with the selected
+config, and access to the results (=See results=, bottom right).
+The first click on this button can take a few seconds.
+
+Depending on your granted access, you can add a new sample to the list (=add file=),
+download sequence files when they are available (=dl=) or delete sequence files (=X=).
+Note that sequence file may be deleted (in particular to save server disk space) while still keeping the results.
+
+*** Processing samples
+
+Depending on your granted accesses, you can schedule a processing for a sequence file (select a config and =run=).
+The processing can take a few seconds to a few hours, depending on the
+software lauched, the options set in the config, the size of the sample and the server load.
+
+The « reload » button (bottom left) updates the status of the task, that should do =QUEUED= → =ASSIGNED= → =RUNNING= → =COMPLETED=.
+It is possible to launch several process at the same time (some will wait in the =QUEUED= / =ASSIGNED= states), and also to launch process while you
+are uploading data. Finally, you can safely close the window with the patient database (and even the browser) when some process are queued/launched.
+The only thing you should not do is to close completely the browser while sequences are uploading.
+
+
+* Can I see all the clones ?
+
+
+The interest of NGS/Rep-Seq studies is to provide a deep view of any
+V(D)J repertoire. The underlying analysis softwares (such as Vidjil)
+try to analyze as much reads as possible (see below 'Number of segmented reads').
+One often wants to "see all clones", but a complete list is difficult
+to see in itself. In a typical dataset with about 10^6 reads, even in
+the presence of a dominant clone, there can be 10^4 or 10^5 different
+clones detected.
+
+** The "top" slider in the "filter" menu
+
+The "top 50" clones are the clones that are in the first 50 ones
+in *at least one* sample. As soon as one clone is in this "top 50"
+list, it is displayed for every sample, even if its concentration is
+very low in other samples.
+Most of the time, a "top 50" is enough. The hidden clones are thus the
+one that never reach the 50 first clones. With a default installation,
+the slider can be set to display clones until the "top 100" on the grid 
+(and, on the graph, until "top 20").
+
+However, in some cames, one may want to track some clones that are
+never in the "top 100", as for example:
+  - a standard/spike with low concentration
+  - a clone in a MRD following of a patient without the diagnostic point
+
+(Upcoming feature). If clone is "tagged" in the =.vidjil= or
+in the =.analysis= file, it will always be shown even if it does not
+meet the "top" filter.
+
+** The "smaller clones"
+
+There is a virtual clone per locus in the clone list which groups all clones that are hidden
+(because of the "top" or because of hiding some tags). The sum of
+ratios in the list of clones is always 100%: thus the "smaller clones"
+changes when one use the "filter" menu.
+
+Note that the ratios include the "smaller clones": if a clone
+is reported to have 10.54%, this 10.54% ratio relates to the number of
+analyzed reads, including the hidden clones.
+
+
+
+
+* What is the sequence displayed for each clone ?
+<<representative>>
+The sequences displayed for each clone are not individual reads.  
+The clones may gather thousands of reads, and all these reads can have
+some differences. Depending on the sequencing technology, the reads
+inside a clone can have different lengths or can be shifted,
+especially in the case of overlapping paired-end sequencing. There can be also
+some sequencing errors.
+The =.vidjil= file has to give one consensus sequence per clone, and
+Rep-Seq algorithms have to deal with great care to these difference in
+order not to gather reads from different clones.
+
+For the Vidjil algorithm, it is required that the window centered on
+the CDR3 is /exactly/ shared by all the reads. The other positions in
+the consensus sequence are guaranteed to be present in /at least half/
+of the reads. The consensus sequence can thus be shorter than some reads.
+
+
+* How can I assess the quality of the data and the analysis ?
+
+To make sure that the PCR, the sequencing and the Vidjil analysis went well, several elements can be controlled.
+
+** Number of segmented reads
+A first control is to check the number of “segmented reads” in the info panel (top left box).
+For each point, this shows the number of reads where Vidjil found a CDR3.
+     
+Ratios above 90% usually mean very good results. Smaller ratios, especially under 60%, often mean that something went wrong.
+The “info“ button further detail the causes of non-segmentation (=UNSEG=, see detail on [[http://git.vidjil.org/blob/master/doc/algo.org][algo.org]]).
+There can be several causes leading to bad ratios: 
+
+*** Analysis or biological causes
+
+   - The data actually contains other germline/locus that what was searched for
+      (solution: relauch Vidjil, or ask that we relaunch Vidjil, with the correct germline sequences).
+      See [[http://git.vidjil.org/blob/master/doc/locus.org][locus.org]] for information on the analyzable locus.
+
+   - There are incomplete/exceptional recombinations
+     (Vidjil can process some of them, config =multi+inc= or command-line option =-i=).
+
+   - There are too many hypersomatic mutations
+     (usually Vidjil can process mutations until 10% mutation rate... above that threshold, some sequences may be lost).
+
+   - There are chimeric sequences or translocations
+     (Vidjil does not process these sequences).
+
+*** PCR or sequencing causes
+
+   - the read length is too short, the reads do not span the junction zone (UNSEG too few V/J or UNSEG only V/J).
+      (Vidjil detects a “window” including the CDR3. By default this window is 40–60bp long, so the read needs be that long centered on the junction).
+
+   - In particular, for paired-end sequencing, one of the ends can lead to reads not fully containing the CDR3 region
+      (solution: ignore this end, or extend the read length, or merge the ends with very conservative parameters).
+
+   - There were too many PCR or sequencing errors
+      (this can be asserted by inspecting the related clones, checking if there is a large dispersion around the main clone)
+
+** Control with standard/spike
+
+   - If your sample included a standard/spike control, you should first
+     identify the main standard sequence (if that is not already done) and
+     specify its expected concentration (by clicking on the “★” button).
+     Then the data is normalized according to that sequence.
+   - You can (de)activate normalization in the settings menu.
+
+** Steadiness verification
+   - When assessing different PCR primers, PCR enzymes, PCR cycles, one may want to see how regular the concentrations are among the points.
+   - When following a patient one may want to identify any clone that is emerging.
+   - To do so, you may want to change the color system, in the “color” menu
+     select “by abundance at selected timepoint”.  The color ranges from red
+     (high concentration) to purple (low concentration) and allows to easily
+     spot on the graph any large change in concentration.
+
+
+** Clone coverage
+   The clone coverage is computed over the consensus sequence which is
+   displayed for each clone (see [[representative][What is the sequence displayed for each clone?]]). 
+   Its length should be representative of the read lengths among that clone. A
+   clone can be constituted of thousands of reads of various lengths. We
+   expect the consensus sequence to be close to the median read length of the
+   clone. The clone coverage is such a measure: having a clone coverage
+   between .85 and 1 is quite frequent. On the contrary, if it is .5 it means that the consensus sequence
+  length is half shorter than the median read length in the clone.
+
+  There is a bad clone coverage (< 0.5) when reads do share the same window
+  (it is how Vidjil defines a clone) and when they have frequent discrepancies
+  outside of the window. Such cases have been observed with chimeric reads
+  which share the same V(D)J recombinations in their first half and have
+  totally different and unknown sequences in their second half.
+
+  In the web application, the clones with a low clone coverage (< 0.5) are displayed in
+  the list with an orange I on the right. You can also visualize the clones
+  according to their clone coverage by selecting for example “clone
+  coverage/GC content” in the preset menu of the “plot” box.
+* Keyboard shortcuts
+
+  | =←= and =→=             | navigate between samples                            |
+  | =Shift-←= and =Shift-→= | decrease or increase the number of displayed clones |
+  | numeric keypad, =0-9=   | switch between available plot presets               |
+
+
+  | =a=: TRA        |                                    |
+  | =b=: TRB        |                                    |
+  | =g=: TRG        |                                    |
+  | =d=: TRD, TRD+  | change the selected germline/locus |
+  | =h=: IGH, IGH+  |                                    |
+  | =l=: IGL        |                                    |
+  | =k=: IGK, IGK+  |                                    |
+  Note: You can select just one locus by holding the Shift key while pressing
+  the letter corresponding to the locus of interest.
+
+ | =Ctrl-s=  | save the analysis         (when connected to a patient database)  |
+ | =Shift-p= | open the 'patient' window (when connected to a patient database) |
+
+
+
+
+* References
+
+If you use Vidjil for your research, please cite the following references:
+
+Marc Duez et al.,
+“Vidjil: High-throughput analysis of immune repertoire”,
+submitted
+
+Mathieu Giraud, Mikaël Salson, et al.,
+“Fast multiclonal clusterization of V(D)J recombinations from high-throughput sequencing”,
+BMC Genomics 2014, 15:409 
+http://dx.doi.org/10.1186/1471-2164-15-409
+
+

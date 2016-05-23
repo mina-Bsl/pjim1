@@ -1,0 +1,40 @@
+>seq-seg+
+tgtgccacctgggacaggGAATTATTATAAGAAACT
+>seq-seg-
+AGTTTCTTATAATAATTCcctgtcccaggtggcaca
+>seq-short
+ATTA
+>seq-strand
+tgtgccacctgggacaggAGTTTCTTATAATAATTC
+>seq-zero
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+>seq-fewV
+AAAAAAAAAAAAAAAAAAGAATTATTATAAGAAACT
+>seq-fewV-rc
+AGTTTCTTATAATAATTCTTTTTTTTTTTTTTTTTT
+>seq-fewV2
+AAAAAAAAAAAAAAAAAAGAATTATTATAAGAAACTCTTTGGCAGTGGAACAACACTGGTTGTCAC
+>seq-fewJ
+tgtgccacctgggacaggAAAAAAAAAAAAAAAAA
+>seq-fewJ-rc
+TTTTTTTTTTTTTTTTTcctgtcccaggtggcaca
+>seq-fewJ2
+tgcaaaatctaattaaaaatgattctgggttctattactgtgccacctgggacaggAAAAAAAAAAAAAAAAAA
+
+>seq-ambiguous-VJVJ
+tgtgccacctgggacaggGAATTATTATAAGAAACTtgtgccacctgggacaggGAATTATTATAAGAAACT
+
+>seq-delta-min
+#vvvvvvvvvvvvvvvvvv               # TRGV11*01 (start)
+#         jjjjjjjjjjjjjjjjjjjjjjj # TRGJ1*02
+#VVVVVVVVVJJJJJJJJJJJJJJ          # contiguous 10-mer
+cttgggcagttggaacaacACTTGTTGTCACAG
+
+>seq-delta-min-padded
+# seq-delta-min padded with some V and some J
+tcttccaacttggaagggagaacgaagtcagtcaccaggctgactgggtcatctgctgaa
+cttgggcagttggaacaacACTTGTTGTCACAG
+gaattattataagaaactctttggcagtggaacaacactggttgtcac
+
+>seq-seg-no-window
+acctgggacaggGAATTATTATAA

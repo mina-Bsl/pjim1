@@ -1,0 +1,299 @@
+<!doctype html>
+
+<!-- 
+  This file is part of "Vidjil" <http://bioinfo.lille.inria.fr/vidjil>, V(D)J repertoire browsing and analysis
+  Copyright (C) 2013, 2014 by Marc Duez <marc.duez@lifl.fr> and the Vidjil Team
+  Bonsai bioinformatics at CRIStAL (UMR CNRS 9189, Université Lille) and Inria Lille
+
+  "Vidjil" is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  "Vidjil" is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with "Vidjil". If not, see <http://www.gnu.org/licenses/>
+-->
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Vidjil</title>
+
+        <link rel="shortcut icon" href="./images/favicon-v.ico" type="image/x-icon">
+        <link rel="icon" href="./images/favicon-v.ico" type="image/x-icon">
+        <link rel="stylesheet" type="text/css" href="css/fonts/ubuntu/stylesheet.css" /> 
+        <link rel="stylesheet" type="text/css" href="css/fonts/ubuntu-mono/stylesheet.css" /> 
+        <link rel="stylesheet" type="text/css" href="css/icons/fontello/css/fontello.css" />
+        <link rel="stylesheet" type="text/css" href="css/icons/fontello/css/animation.css" />
+        <link id="palette" rel="stylesheet" type="text/css" href="css/light.css" />
+        <link id="seg_highlight" rel="stylesheet" type="text/css" href="css/segmenter_highlight.css" />
+
+        <script data-main="js/app.js" src="js/lib/require.js"></script>
+
+    </head>
+
+
+    <body>
+
+        <div id="file_menu" >
+            <span class="closeButton" onclick="cancel();">X</span>
+
+            <h2>Vidjil <span class='logo'>(beta)</span> &ndash; V(D)J repertoire browsing and analysis</h2>
+
+            Data file (.vidjil):<br/>
+            <input id="upload_json" type="file" name="json" /></br>
+            <p class='help'>The .vidjil file stores a set of clones on several points.</p>
+
+            Analysis file (.analysis, optional):<br/>
+            <input id="upload_pref" type="file" name="pref" /></br>
+            <p class='help'>The .analysis file stores all parameters set by the user (tags, colors, manual clusters).</p>
+
+            <button onclick="document.getElementById('file_menu').style.display='none';
+            m.load('upload_json','upload_pref', 200)">start</button> 
+        </div>
+
+        <div id="axis_choice" >
+            <span class="closeButton" onclick="cancel();">X</span>
+            <h2>analysis menu</h2>
+
+            Analysis file:<br/>
+            <input id="upload_analysis" type="file" name="analysis" /></br></br>
+
+            <button onclick="document.getElementById('axis_choice').style.display='none';
+                                    m.loadAnalysis('upload_analysis');">start</button> 
+        </div>
+        
+        <!-- TOP-CONTAINER -->
+        <div id="top-container">
+            <div id="menu-container">
+                <div class="menu" id="top_info">
+                    <!--Div is filled programmatically -->
+                </div>
+                <div class="menu" id="db_menu" onmouseover="showSelector('dbSelector');" style="display : none">patients
+                    <div id="dbSelector" class="selector"><div>
+                        <div class="menu_box">
+                            <a class="buttonSelector" onclick="javascript:db.call('patient/index')">open patient list</a>
+                        </div>
+                        <div class="menu_box">
+                            <div id="last_loaded_file">
+                            </div>
+                        </div>
+                    </div></div>
+                </div>
+
+                <div class="menu" id="static_file_menu" onmouseover="showSelector('fileSelector');" style="display : none">file
+                  <div id="fileSelector" class="selector"><div>
+                        <div class="menu_box">
+                            <div id="upload_list">
+                            </div>
+                        </div>
+                  </div></div>
+                </div>
+ 
+                <div class="menu" id="demo_file_menu" onmouseover="showSelector('demoSelector');">import/export
+                    <div id="demoSelector" class="selector"><div>
+                        <div class="menu_box">
+                            <a id="import_data_anchor" id="import_data" class="buttonSelector" onclick="javascript:loadData()">import data (.vidjil)</a>
+                            <a id="import_data_analysis" id="import_analysis" class="buttonSelector" onclick="javascript:loadAnalysis()">import analysis</a>
+                        </div>
+                        <!--<a class="buttonSelector" onclick="javascript:m.resetAnalysis()">reset analysis</a> -->
+                        <!--<a class="buttonSelector" onclick="javascript:reset()">reset all</a> -->
+                        <div class="menu_box">
+                          <a class="buttonSelector" id="export_sample_report" onclick="javascript:report.reportHTMLdiag()">export report (sample)</a>
+                          <a class="buttonSelector" id="export_monitor_report" onclick="javascript:report.reportHTML()">export report (monitor)</a>
+                        </div>
+                        <div class="menu_box">
+                            <a class="buttonSelector" id="export_analysis" onclick="javascript:m.saveAnalysis()">export analysis</a>
+                            <a class="buttonSelector" id="export_svg1" onclick="javascript:graph.resize(1400,800);m.exportSVG('visu2_svg')">export SVG graph</a>
+                            <a class="buttonSelector" id="export_svg2" onclick="javascript:sp.resize(1400,800);sp.fastForward();m.exportSVG('visu_svg')">export SVG plot</a>
+                            <a class="buttonSelector" id="export_csv" onclick="javascript:m.exportCSV()">export csv (visible clones)</a>
+                            <a class="buttonSelector" id="export_fasta" onclick="javascript:m.exportFasta()">export fasta (selected clones)</a>
+                        </div>
+                    </div></div>
+                </div>
+
+                <div class="menu" id="cluster_menu" onmouseover="showSelector('clusterSelector');" > cluster
+                    <div id="clusterSelector" class="selector"><div>
+                        <a class="buttonSelector" onclick="m.restoreClusters();">clones merged by user</a>
+                        <a class="buttonSelector" onclick="m.resetClusters();">reset all user clones</a>
+                        <a class="buttonSelector" onclick="m.clusterBy(function(id){return m.clone(id).getGene(5)});">cluster by V/5' </a>
+                        <a class="buttonSelector" onclick="m.clusterBy(function(id){return m.clone(id).getGene(3)});">cluster by J/3' </a>
+                        <a class="buttonSelector" onclick="m.clusterBy(function(id){return m.clone(id).germline});">cluster by locus </a>
+                        <a class="buttonSelector devel-mode" onclick="m.similarity_builder.DBscan(95,0.001);">cluster by DBscan (experimental) </a>
+                        <a class="buttonSelector" onclick="m.similarity_builder.cluster_me(95,0.1);">cluster by similarity </a>
+                        <div id="clusterby_button"> </div>
+                    </div></div>
+                </div>
+
+                <div class="menu" id="color_menu" onmouseover="showSelector('colorSelector');" > color by
+                    <div class="div-menu-selector"><select class="menu-selector" onchange="m.changeColorMethod(this.value)">
+                        <option value="Tag">tag</option>
+                        <option value="V">V/5'</option>
+                        <option value="J">J/3'</option>
+                        <option value="N">N</option>
+                        <option value="system" id="color_system_button">locus/germline</option>
+                        <option value="abundance">abundance</option>
+                        <option value="productive">productivity</option>
+                    </select></div>
+                </div>
+
+                <div class="menu" id="filter_menu" onmouseenter="builder.build_displaySelector();" onmouseover="showSelector('filterSelector');" > filter
+                    <div id="filterSelector" class="selector"><div>
+                        <div class="menu_box">
+                            <span id="top_label"></span></br>
+                            <input id="top_slider" type="range" min="5" max="100" step="5" value="10" onchange="m.displayTop(this.value)" />
+                        </div>
+                        <div class="menu_box">
+                            tag visibility</br>
+                            <ul id="tagList">
+                            </ul>
+                        </div>
+                    </div></div>
+                </div>
+
+                <div class="menu" id="settings_menu" onmouseenter="builder.build_settings();" onmouseover=" showSelector('settingsSelector');" > settings
+                    <div id="settingsSelector" class="selector"><div>
+                        <div class="menu_box">
+                            normalization</br>
+                            <form name="normalize_list" id="normalize_list">
+                            </form>
+                        </div>
+
+                        <div class="menu_box">
+                            normalization method</br>
+                            <div class="buttonSelector" onclick="m.changeNormMethod('constant')" ><input type="radio" name="normalize_method" value="constant" checked >constant</input></div>
+                            <div class="buttonSelector" onclick="m.changeNormMethod('to-100')" ><input type="radio" name="normalize_method" value="to-100">to 100%</input></div>
+
+                        </div>
+
+                        <div class="menu_box">
+                            size display</br>
+                            <div class="buttonSelector" onclick="m.changeNotation('scientific', true)"><input type="radio" name="notation" value="scientific" >scientific notation</input></div>
+                            <div class="buttonSelector" onclick="m.changeNotation('percent', true)"><input type="radio" name="notation" value="percent" checked>percent</input></div>
+                        </div>
+
+                        <div class="menu_box">
+                            point key</br>
+                            <div class="buttonSelector" onclick="m.changeTimeFormat('name', true)"><input type="radio" name="time" value="name" checked>name</input></div>
+                            <div class="buttonSelector" onclick="m.changeTimeFormat('short_name', true)"><input type="radio" name="time" value="short_name" checked>name (short)</input></div>
+                            <div class="buttonSelector" onclick="m.changeTimeFormat('sampling_date', true)"><input type="radio" name="time" value="sampling_date" >sampling date</input></div>
+                            <div class="buttonSelector" onclick="m.changeTimeFormat('delta_date', true)"><input type="radio" name="time" value="delta_date">day after first sample</input></div>
+                        </div>
+
+                        <!--
+                        <div class="submenu" id="system_menu" style="display:none">
+                            <div class="menu_box">
+                                selected locus/germline (for the grid)</br>
+                                <ul id="germline_list">
+                                </ul>
+                            </div>
+                        </div>
+                        -->
+
+                        <!--menu graph/dbscan -->
+                        <div class="submenu" style="display:none">
+
+                            <div class="menu_box">
+                                <div id="DBSCANEpsSlider">
+                                <input id="changeEps" type="range" min="0" max="40" step="1" value="0" onchange="m.changeEps(this.value)" />
+                                </div>
+                            </div>
+
+
+                            <div class="menu_box">
+                                <div id="DBSCANNbrSlider">
+                                <input id="changeNbr" type="range" min="0" max="100" step="1" value="0" onchange="m.changeNbr(this.value)" />
+                                </div>
+                            </div>
+
+
+                            <div class="menu_box">
+                                <div id="EditDistanceSlider">
+                                </br>
+                                <input id="displayMax_slider" type="range" min="1" max="20" step="1" value="10" onchange="sp.displayDistanceMax(this.value)" style="display:none"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div></div>
+                </div>
+
+
+                <div id="debug_menu" class="menu" onmouseover="showSelector('adminSelector');" style="display : none"> development
+                    <div id="adminSelector" class="selector"><div>
+                        <input type="checkbox" onclick=" this.checked ? $('#fps').css('display', '') : $('#fps').css('display', 'none');">display fps</input></br>
+                        <input type="checkbox" onclick=" this.checked ? console.openLog() : console.closeLog() ;">log</input>
+                        <div class="buttonSelector" onclick="m.changeTimeFormat('delta_date_no_zero', true)"><input type="radio" name="time" value="delta_date_no_zero">day after first sample (no zero)</input></div>
+                    </div></div>
+                </div>
+            </div>
+
+            <div id="logo" style="float: right;" onclick="console.log({'type': 'popup', 'default':'welcome'})">Vidjil <span class='logo'>(beta)</span></div>
+
+            <div class="menu" style="float: right"> <a href="help" target="_blank">help</a></div>
+
+            <div style="float: right" class="menu" onmouseover="showSelector('paletteSelector');"> palette 
+                <div id="paletteSelector" class="selector"><div>
+                    <a class="buttonSelector" onclick="changeStyle('solarizeL')">light</a>
+                    <a class="buttonSelector" onclick="changeStyle('display')">light (presentation)</a>
+                    <a class="buttonSelector" onclick="changeStyle('solarizeD')">dark</a>
+                </div></div>
+            </div>
+
+            <div id="upload_summary" style="float: right; display:none; margin-right: 200px;" class="menu" onmouseover="showSelector('upload_summary_selector');"> 
+                <span id="upload_summary_label">upload</span>
+                <div id="upload_summary_selector" class="selector"><div>
+
+                </div></div>
+            </div>
+
+            <div id="fps" style="float: right; display: none"> </div>
+            <div id="header_messages" class="message_container header"></div>
+
+<!--
+	    <div class="menu" style="float: right; margin-right:100px"><span style="padding: 4px 5px; background-color: #fef6e3; font-family: ubuntulight;">
+		<b>Maintenance:</b> Vidjil will be offline Tuesday 7, 11:00 → 13:00 CEST. Thank you for your understanding.
+	    </span></div>
+-->
+        </div>  
+        <!-- fin top-container-->
+        
+        <!-- MID-CONTAINER -->
+        <div id="mid-container" onmouseover="hideSelector()">
+
+            <!-- LEFT-CONTAINER -->
+            <div id="left-container">
+                <div id="info-row"><div id="info"> </div></div>
+                <div id="list-row"><div id="list"> </div></div>
+                <div id="data-row"><div id="data"> </div></div>
+            </div>
+            <!-- fin left-container -->
+
+            <div id="vertical-separator"></div>
+
+            <!-- RIGHT-CONTAINER -->
+            <div id="right-container"></div>
+
+            <!-- VISU-CONTAINER  -->
+            <div id="visu-container">
+                <div id="visu2"></div>
+                <div id="visu-separator" >...</div>
+                <div id="visu" onclick=""></div>
+            </div>
+
+        </div>
+        <!-- fin mid-container -->
+
+        <!-- BOT-CONTAINER / SEGMENTER-CONTAINER -->
+        <div id="bot-container"> </div>
+
+        <form id="form"></form>
+
+    </body> 
+
+</html>
