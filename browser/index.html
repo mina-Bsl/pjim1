@@ -288,6 +288,225 @@
 				<p class="text-muted"></p>
       			</div>
    		 </footer>
+
+   <head>
+        <meta charset="utf-8">
+        <title>Vidjil-Test</title>
+        <link href="css/bootstrap.css" rel="stylesheet" type="text/css" />
+        <link href="css/css.css" rel="stylesheet" type="text/css" />
+
+        <script data-main="js/app.js" src="js/lib/require.js"></script>
+    </head>
+
+  <body>
+
+  	<div id="file_menu" >
+            <span class="closeButton" onclick="cancel();">X</span>
+
+            <h2>Vidjil <span class='logo'>(beta)</span> &ndash; V(D)J repertoire browsing and analysis</h2>
+
+            Data file (.vidjil):<br/>
+            <input id="upload_json" type="file" name="json" /></br>
+            <p class='help'>The .vidjil file stores a set of clones on several points.</p>
+
+            Analysis file (.analysis, optional):<br/>
+            <input id="upload_pref" type="file" name="pref" /></br>
+            <p class='help'>The .analysis file stores all parameters set by the user (tags, colors, manual clusters).</p>
+
+            <button onclick="document.getElementById('file_menu').style.display='none';
+            m.load('upload_json','upload_pref', 200)">start</button> 
+        </div>
+
+
+    <div class="container" id="menunav">
+      <header class="page-header">
+	<div class="navbar navbar-fixed-top navbar-inverse" id="menutop"><!-- navbar-inverse-->
+	<!-- Ici le fond par défaut de la nav bar est noir grace à la propriété "navbar-inverse" et le texte gris foncé difficile à lire
+	. Un texte ajouter ici devrait avoir un couleur spécifique???  A quoi sert nav-fixed-top ??? position fixe top ? -->
+	<div id="myMenu" class="container-fluid"><!-- container-inverse ???-->
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        			<span class="icon-bar"></span>
+        			<span class="icon-bar"></span>
+        			<span class="icon-bar"></span>                        
+      			</button>
+				<a class="navbar-brand" id="logo" href="#" onclick="console.log({'type': 'popup', 'default':'welcome'})">VIDJIL (beta)</a>
+		</div>
+		<div class="collapse navbar-collapse" id="myNavbar">
+		<ul class="nav navbar-nav pull-left">
+				      	<li class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#"> Patients <!-- <span class="caret"></span>--></a>
+							<ul class="dropdown-menu">
+								<li><a class="buttonSelector" onclick="javascript:db.reload()">open patient</a></li>
+								<li><a class="buttonSelector" onclick="javascript:db.save_analysis()">save analysis</a></li>
+							</ul>
+					</li>
+					<li class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#">Import/Export<!-- <span class="caret"></span>--></a>
+							<ul class="dropdown-menu">
+								<li><a id="import_data_anchor" id="import_data" class="buttonSelector" onclick="javascript:loadData()">import data (.vidjil)</a></li>
+								<li><a class="buttonSelector" onclick="javascript:db.save_analysis()">save analysis</a></li>
+								<!--<li><a class="buttonSelector" onclick="javascript:m.resetAnalysis()">reset analysis</a></li> -->
+								<!--<li><a class="buttonSelector" onclick="javascript:reset()">reset all</a></li> -->
+								<li class="divider"></li>
+								<li><a class="buttonSelector" id="export_sample_report" onclick="javascript:report.reportHTMLdiag()">export report (sample)</a>
+								<li><a class="buttonSelector" id="export_monitor_report" onclick="javascript:report.reportHTML()">export report (monitor)</a>
+								<li class="divider"></li>
+								<li><a class="buttonSelector" id="export_analysis" onclick="javascript:m.saveAnalysis()">export analysis</a></li>
+								<li><a class="buttonSelector" id="export_pdf" onclick="javascript:pdf.makeGraph()">export pdf (graph)</a></li>
+								<li><a class="buttonSelector" id="export_csv" onclick="javascript:m.exportCSV()">export csv (visible clones)</a></li>
+								<li><a class="buttonSelector" id="export_fasta" onclick="javascript:m.exportFasta()">export fasta (selected clones)</a></li>		
+							</ul>
+					</li>
+					<li class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#">Cluster<!-- <span class="caret"></span>--></a>
+							<ul class="dropdown-menu">
+								<li><a class="buttonSelector" onclick="m.restoreClusters();">clones merged by user</a></li>
+								<li><a class="buttonSelector" onclick="m.resetClusters();">reset all user clones</a></li>
+								<li><a class="buttonSelector" onclick="m.clusterBy(function(id){return m.clone(id).getGene(5)});">cluster by V/5' </a></li>
+								<li><a class="buttonSelector" onclick="m.clusterBy(function(id){return m.clone(id).getGene(3)});">cluster by J/3' </a></li>
+								<li><a class="buttonSelector" onclick="m.clusterBy(function(id){return m.clone(id).germline});">cluster by locus </a></li>
+							</ul>
+					</li>
+					<li id ="spe"><label>Color by<label>
+							<!--<div class="div-menu-selector">-->
+								<select class="filter-option" onchange="m.changeColorMethod(this.value)">
+									<option value="Tag">tag</option>
+									<option value="V">V/5'</option>
+									<option value="J">J/3'</option>
+									<option value="N">N</option>
+									<option value="system" id="color_system_button">locus/germline</option>
+									<option value="abundance">abundance</option>
+									<option value="productive">productivity</option>
+								</select>
+					</li>
+					<!-- <span class="caret"></span>-->
+							<!---</div>-->
+		</ul>
+	     </div>
+	</div>
+      </header>
+    </div>
+
+    <div class="container-fluid" id = "globale">  <!--fluid-->
+         <div class="col-md-10" id= "principale">
+	<div id="gauche"><a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+	  </a>
+	</div>
+	    <div class="col-md-1" id= "filter">
+            	<span title="clone 1" id="fastTag0" class="tagColorBox tagColor0"></span>
+		<span title="clone 2" id="fastTag1" class="tagColorBox tagColor1"></span>
+		<span title="clone 3" id="fastTag2" class="tagColorBox tagColor2"></span>
+		<span title="clone 4" id="fastTag3" class="tagColorBox tagColor3"></span>
+		<span title="clone 5" id="fastTag4" class="tagColorBox tagColor4"></span>
+		<span title="clone 6" id="fastTag5" class="tagColorBox tagColor5"></span>
+		<span title="clone 7" id="fastTag6" class="tagColorBox tagColor6"></span>
+		<span title="clone 8" id="fastTag7" class="tagColorBox tagColor7"></span>
+		<span title="clone 9" id="fastTag8" class="tagColorBox tagColor8"></span>
+	    </div>
+
+	
+	 <div class="container-fluid col-md-12" id= "windows">
+
+	  <div id="myCarousel" class="carousel slide" data-ride="carousel">
+	  <!-- Indicators -->
+
+	  <!-- Wrapper for slides -->
+	   <div class="carousel-inner" role="listbox">
+	     <div class="item active" >
+	       	<div id="visu2" class="container-fluide col-md-12">
+	       		<!--<p> je suis la fenetre secondaire
+				 je suis de taille réduite 
+				 je contient GRAPHE PATIENT</p>-->
+	      </div>
+	     </div>
+
+	     <div class="item">
+	      	<div class="imagehidden container-fluide col-md-12" id="imageh2">
+	      		<!--<p> je suis la fenetre secondaire
+		    	je suis de taille réduite
+	            je contient INFO PATIENT</p>-->
+		</div>
+		</div>
+	     </div>
+
+	     <div class="item">
+	       <div class="imagehidden container-fluide col-md-12" id="imageh3">
+		       <!--	<p> je suis la troisième fenetre
+				 je suis de taille réduite
+				je contient DNA PATIENT</p>-->
+	      </div>
+	     </div>
+
+	     <div class="item">
+	      	<div class="imagehidden container-fluide col-md-12" id="imageh4">
+	      		<div class="imagehidden container-fluide col-md-12" id="imageh4">
+					<!--<p> je suis la quatrieme fenetre
+					je suis de taille réduite
+					je contient LIST</p>-->
+	      	</div>
+	     </div>
+
+	  </div>
+	
+	</div>
+	</div>
+  	<div id="droite">
+  		<a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+	  </a>
+	</div >
+         </div>
+
+        <div id="scrolle" class="col-md-2">
+            <div id="info-row" class="container-fluid col-md-12">
+	            <!--<p> je suis la quatrieme fenetre
+				je suis de taille réduite
+				je contient INFO PATIENT</p>-->
+            </div>
+          	<div id="list-row" class="container-fluid col-md-12">
+          		<!--<p> je suis la quatrieme fenetre
+					je suis de taille réduite
+					je contient LIST</p>-->
+          	</div>
+            <div id="visu" class="container-fluid col-md-12">
+            	<!--<p> je suis la troisième fenetre
+				 je suis de taille réduite
+				je contient GRIDE PATIENT</p>-->
+            </div>
+
+          	<div id="filterb">
+            	<span title="clone 1" id="fastTag0" class="tagColorBox tagColor0"></span>
+				<span title="clone 2" id="fastTag1" class="tagColorBox tagColor1"></span>
+				<span title="clone 3" id="fastTag2" class="tagColorBox tagColor2"></span>
+				<span title="clone 4" id="fastTag3" class="tagColorBox tagColor3"></span>
+				<span title="clone 5" id="fastTag4" class="tagColorBox tagColor4"></span>
+				<span title="clone 6" id="fastTag5" class="tagColorBox tagColor5"></span>
+				<span title="clone 7" id="fastTag6" class="tagColorBox tagColor6"></span>
+				<span title="clone 8" id="fastTag7" class="tagColorBox tagColor7"></span>
+				<span title="clone 9" id="fastTag8" class="tagColorBox tagColor8"></span>
+	    	</div>
+        </div>
+
+	
+      </div>
+
+	</div>
+	<footer class="footer">
+	  <div class="container-fluid" id="footerbut">
+	  
+	  </div>
+      	<div class="container-fluid" id="dna">
+	  
+	<ol class="carousel-indicators">
+	    <li id="infoicone" data-target="#myCarousel" data-slide-to="0"></li>
+	    <li id="graphicone" data-target="#myCarousel" data-slide-to="1"></li>
+	    <li id="gridicone" data-target="#myCarousel" data-slide-to="2"></li>
+	    <li id="dnaicone" data-target="#myCarousel" data-slide-to="3"></li>
+	</ol>
+	<p class="text-muted"></p>
+      </div>
+    </footer>
+>>>>>>> b7f205c275777ec2ea55a6934677fa074d790550
     
     <script src="js/jquery.js"></script>
     <script src="js/bootstrap.js" ></script>
@@ -327,7 +546,6 @@
 	$(b).html(variable);
 	$(a).html(variable2);
 	}
-
      
 	 $("#info-row").dblclick(function()
 	{
@@ -345,6 +563,7 @@
         swapNodes('#visu2', '#visu','#imageh4');
       	});
 
+<<<<<<< HEAD
 	function copyOnLoading(a, b) {
 	var variable = $(a).html()
 	$(b).html(variable);
